@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>TItanic Survival Prediction</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    </style>
+</head>
+<body>
+    <div class="img"></div>
+    <h1 style="margin-left:520px;">Titanic Survival Prediction</h1>
+</br>
+    <form class="form">
+        <h2>Age</h2>
+        <input class="area" type="email" id="age" class="floatLabel" name="age_name" value="24">
+        <h2>Fare</h2>
+        <input class="area" type="email" id="fare" class="floatLabel" name="fare_name" value="1000">
+        <h2>Pclass</h2><p>(Ticket class)</p>
+        <div class="switch-field">
+            <input type="radio" id="radio-pclass-1" name="pclass" value="1" />
+            <label for="radio-pclass-1">1</label>
+            <input type="radio" id="radio-pclass-2" name="pclass" value="2" checked />
+            <label for="radio-pclass-2">2</label>
+            <input type="radio" id="radio-pclass-3" name="pclass" value="3" />
+            <label for="radio-pclass-3">3</label>
+            
+        </div>
+        <h2>Parch</h2><p>(parents / children aboard the Titanic)</p>
+        <div class="switch-field"> 
+            <input type="radio" id="radio-parch-0" name="parch" value="0" />
+            <label for="radio-parch-0">0</label>
+            <input type="radio" id="radio-parch-1" name="parch" value="1" />
+            <label for="radio-parch-1">1</label>
+            <input type="radio" id="radio-parch-2" name="parch" value="2" checked />
+            <label for="radio-parch-2">2</label>
+            <input type="radio" id="radio-parch-3" name="parch" value="3" />
+            <label for="radio-parch-3">3</label>
+            <input type="radio" id="radio-parch-4" name="parch" value="4" />
+            <label for="radio-parch-4">4</label>
+            <input type="radio" id="radio-parch-5" name="parch" value="5" />
+            <label for="radio-parch-5">5</label>
+            <input type="radio" id="radio-parch-6" name="parch" value="6" />
+            <label for="radio-parch-6">6</label>
+        </div>
+    </form>
+    <form class="form">
+        <h2>SibSp</h2><p>(sibling/spouses aboard the Titanic)</p>
+        <div class="switch-field">
+            <input type="radio" id="radio-sibsp-0" name="sibsp" value="0" />
+            <label for="radio-sibsp-0">0</label>
+            <input type="radio" id="radio-sibsp-1" name="sibsp" value="1" />
+            <label for="radio-sibsp-1">1</label>
+            <input type="radio" id="radio-sibsp-2" name="sibsp" value="2" checked />
+            <label for="radio-sibsp-2">2</label>
+            <input type="radio" id="radio-sibsp-3" name="sibsp" value="3" />
+            <label for="radio-sibsp-3">3</label>
+            <input type="radio" id="radio-sibsp-4" name="sibsp" value="4" />
+            <label for="radio-sibsp-4">4</label>
+            <input type="radio" id="radio-sibsp-5" name="sibsp" value="5" />
+            <label for="radio-sibsp-5">5</label>
+            <input type="radio" id="radio-sibsp-8" name="sibsp" value="8" />
+            <label for="radio-sibsp-8">8</label>
+        </div>
+        <h2>Sex</h2>
+        <div>
+            <select class="sex_embark" name="" id="sex">
+                <option value="" disabled="disabled" selected="selected">Choose sex</option>
+                <option>Sex_female</option>
+                <option>Sex_male</option>
+            </select>
+        </div>
+        <h2>Embarked</h2>
+        <div>
+            <select class="sex_embark" name="" id="embark">
+                <option value="" disabled="disabled" selected="selected">Embarked type</option>
+                <option>Embarked_C</option>
+                <option>Embarked_Q</option>
+                <option>Embarked_S</option>
+         </select>
+        </div>
+        <button class="submit" onclick="SurvivalPrediction()" type="button">Survival Prediction</button>
+        <div id="prediction" class="result">
+            <h2></h2>
+        </div>
+
+
+
+
+<script>
+function getPclass() {
+    var pc = document.getElementsByName("pclass");
+    for (var i in pc) {
+        if (pc[i].checked) {
+            return parseInt(i) + 1
+        }
+    }
+    return -1 // invalid
+}
+
+function getParch() {
+    var prh = document.getElementsByName("parch");
+    for (var i in prh) {
+        if (prh[i].checked) {
+            return parseInt(i)
+        }
+    }
+    return -1
+}
+
+function getSibsp() {
+    var sp = document.getElementsByName("sibsp");
+    for (var i in sp) {
+        if (sp[i].checked) {
+            return parseInt(i)
+        }
+    }
+    return -1
+}
+
+function SurvivalPrediction() {
+    console.log('survival clicked')
+    var age = document.getElementById("age");
+    var fare = document.getElementById("fare");
+    var pclass = getPclass();
+    var parch = getParch();
+    var sibsp = getSibsp();
+    var sex = document.getElementById("sex");
+    var embark = document.getElementById("embark");
+    var prediction = document.getElementById("prediction");
+    
+    var url = '{{ url_for("predict") }}';
+    $.post(url, {
+        age: age.value,
+        fare: parseFloat(fare.value),
+        sex: sex.value,
+        embark: embark.value,
+        pclass: pclass,
+        parch: parch,
+        sibsp: sibsp
+    }, function (data, status) {
+        prediction.innerHTML = "<h2>" + data.estimate_prediction + "<h2>";
+    });
+}
+</script>
+
+</br>
+</br>
+</br>
+</br>
+
+
+</body>
+
+</html>
